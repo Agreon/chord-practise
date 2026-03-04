@@ -135,17 +135,6 @@
               Next chord in 2.5s — tap below to rate
             </div>
           </div>
-          <div class="rating-buttons">
-            <button class="rating-btn nope" data-rating="0">
-              <span class="rating-icon">😬</span>Nope
-            </button>
-            <button class="rating-btn ok" data-rating="0.5">
-              <span class="rating-icon">🤙</span>Almost
-            </button>
-            <button class="rating-btn nailed" data-rating="1">
-              <span class="rating-icon">🎯</span>Nailed it
-            </button>
-          </div>
         </div>
 
         <div class="controls">
@@ -166,7 +155,7 @@
         >
           <span>Progress</span>
           <button
-            onclick="resetProgress()"
+            id="reset-btn"
             style="
               background: none;
               border: 1px solid rgba(255, 255, 255, 0.08);
@@ -195,6 +184,6 @@
       </div>
     </div>
 
-    <script src="app.js"></script>
+    <script type="module" src="js/main.js"></script>
   </body>
 </html>
