@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chord Practice</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>
+        Chord Practice <span class="subtitle">Adaptive Guitar Training</span>
+      </h1>
+    </header>
+
+    <!-- Setup Screen -->
+    <div id="setup-screen">
+      <div class="setup-card">
+        <div class="setup-icon">🎸</div>
+        <div class="setup-title">Let's Practice</div>
+        <p class="setup-desc">
+          Select the chords you want to practice.<br />
+          The app will show each chord, listen for your strum,<br />
+          then you rate how well you played it.<br />
+          Harder chords appear more often.
+        </p>
+
+        <div class="chord-select-grid" id="chord-select-grid"></div>
+
+        <div class="setting-row">
+          <label class="setting-label" for="advance-delay-slider"
+            >Auto-advance delay</label
+          >
+          <div class="setting-control">
+            <input
+              type="range"
+              id="advance-delay-slider"
+              class="setting-slider"
+              min="0.25"
+              max="10"
+              step="0.25"
+              value="2.5"
+            />
+            <span id="advance-delay-value" class="setting-value">2.5s</span>
+          </div>
+        </div>
+
+        <button
+          class="btn btn-primary"
+          id="start-btn"
+          style="width: 100%; padding: 16px"
+        >
+          Start Practice
+        </button>
+        <p class="mic-status" id="mic-status">Microphone access required</p>
+      </div>
+    </div>
+
+    <!-- Practice Screen -->
+    <div
+      id="practice-screen"
+      style="display: none; width: 100%; max-width: 560px"
+    >
+      <div class="main-card">
+        <div class="card-top-row">
+          <div class="chord-label">
+            <div class="chord-name" id="chord-name">C</div>
+            <div class="chord-type" id="chord-type">Major</div>
+          </div>
+
+          <div class="diagram-wrap">
+            <div class="fretboard" id="fretboard"></div>
+          </div>
+        </div>
+
+        <div class="timer-mastery-row">
+          <!-- Reaction Timer Ring -->
+          <div class="timer-ring-wrap" id="timer-ring-wrap">
+            <svg class="timer-svg" width="90" height="90" viewBox="0 0 90 90">
+              <circle class="timer-track" cx="45" cy="45" r="38" />
+              <circle
+                class="timer-arc"
+                id="timer-arc"
+                cx="45"
+                cy="45"
+                r="38"
+                stroke-dasharray="238.76"
+                stroke-dashoffset="0"
+              />
+            </svg>
+            <div class="timer-center-text">
+              <div class="timer-seconds" id="timer-seconds">0.0</div>
+              <div class="timer-label">sec</div>
+            </div>
+          </div>
+
+          <div class="mastery-section">
+            <div class="mastery-label">
+              <span>Mastery</span>
+              <span id="mastery-pct">0%</span>
+            </div>
+            <div class="mastery-bar-bg">
+              <div
+                class="mastery-bar-fill"
+                id="mastery-bar"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="listen-area" id="listen-area">
+          <div class="pulse-ring" id="pulse-ring">
+            <span class="mic-icon">🎙</span>
+          </div>
+          <div class="listen-text">
+            <span id="listen-status">Strum the chord...</span>
+            <span id="listen-sub">Listening for sound</span>
+          </div>
+          <div class="volume-bars" id="volume-bars"></div>
+        </div>
+
+        <div class="rating-section" id="rating-section">
+          <div class="rating-prompt">How did that sound?</div>
+          <div class="result-highlight" id="result-highlight"></div>
+          <div class="countdown-wrap" id="countdown-wrap">
+            <div class="countdown-bar-bg">
+              <div class="countdown-bar-fill" id="countdown-bar-fill"></div>
+            </div>
+            <div class="countdown-label" id="countdown-label">
+              Next chord in 2.5s — tap below to rate
+            </div>
+          </div>
+          <div class="rating-buttons">
+            <button class="rating-btn nope" data-rating="0">
+              <span class="rating-icon">😬</span>Nope
+            </button>
+            <button class="rating-btn ok" data-rating="0.5">
+              <span class="rating-icon">🤙</span>Almost
+            </button>
+            <button class="rating-btn nailed" data-rating="1">
+              <span class="rating-icon">🎯</span>Nailed it
+            </button>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="btn" id="skip-btn">Skip</button>
+          <button class="btn" id="settings-btn">Chords</button>
+          <button class="btn btn-end" id="end-btn">End</button>
+        </div>
+      </div>
+
+      <div class="stats-panel">
+        <div
+          class="stats-title"
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <span>Progress</span>
+          <button
+            onclick="resetProgress()"
+            style="
+              background: none;
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              color: var(--text-muted);
+              font-family: &quot;DM Mono&quot;, monospace;
+              font-size: 0.6rem;
+              letter-spacing: 0.1em;
+              text-transform: uppercase;
+              padding: 4px 10px;
+              border-radius: 3px;
+              cursor: pointer;
+            "
+            onmouseover="
+              this.style.borderColor = 'var(--red)';
+              this.style.color = 'var(--red)';
+            "
+            onmouseout="
+              this.style.borderColor = 'rgba(255,255,255,0.08)';
+              this.style.color = 'var(--text-muted)';
+            "
+          >
+            Reset
+          </button>
+        </div>
+        <div class="chord-stats-grid" id="chord-stats-grid"></div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
