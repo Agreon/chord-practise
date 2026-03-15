@@ -705,6 +705,28 @@
         border: 1px solid rgba(232, 92, 92, 0.3);
       }
 
+      footer {
+        margin-top: 28px;
+        padding-bottom: 12px;
+        font-size: 0.6rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      footer a {
+        color: var(--amber-dim);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+
+      footer a:hover {
+        color: var(--amber);
+      }
+
       @media (max-width: 480px) {
         .main-card {
           padding: 16px 14px;
