@@ -13,6 +13,7 @@ import {
   syncDelaySlider,
   toggleChord,
   onChordDetected,
+  getStateSnapshot,
 } from "./session.js";
 
 // Break the audio ↔ session circular dependency
@@ -25,6 +26,7 @@ initScores();
 buildChordSelect(state.selectedChords, Object.keys(CHORDS), toggleChord);
 setupVolumeBars();
 syncDelaySlider();
+document.getElementById("hide-diagram-toggle").checked = state.hideChordDiagram;
 
 if (data) {
   const status = document.getElementById("mic-status");
@@ -51,6 +53,11 @@ document.getElementById("skip-btn").onclick = () => {
 document.getElementById("settings-btn").onclick = stopSession;
 document.getElementById("end-btn").onclick = stopSession;
 document.getElementById("reset-btn").onclick = resetProgress;
+
+document.getElementById("hide-diagram-toggle").onchange = (e) => {
+  state.hideChordDiagram = e.target.checked;
+  saveProgress(getStateSnapshot());
+};
 
 document.getElementById("advance-delay-slider").oninput = (e) => {
   state.autoAdvanceDelay = Number.parseFloat(e.target.value) * 1000;

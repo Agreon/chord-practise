@@ -9,6 +9,11 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
+    <script
+      defer
+      data-domain="chords.agreon.de"
+      src="https://plausible.agreon.de/js/plausible.js"
+    ></script>
   </head>
   <body>
     <header>
@@ -46,6 +51,24 @@
               value="2.5"
             />
             <span id="advance-delay-value" class="setting-value">2.5s</span>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <label class="setting-label" for="hide-diagram-toggle"
+            >Hide chord diagram</label
+          >
+          <div class="setting-control">
+            <input
+              type="checkbox"
+              id="hide-diagram-toggle"
+              style="
+                accent-color: var(--amber);
+                width: 16px;
+                height: 16px;
+                cursor: pointer;
+              "
+            />
           </div>
         </div>
 
@@ -186,7 +209,12 @@
 
     <footer>
       <span>Made by</span>
-      <a href="https://github.com/Agreon/chord-practice" target="_blank" rel="noopener">Agreon</a>
+      <a
+        href="https://github.com/Agreon/chord-practice"
+        target="_blank"
+        rel="noopener"
+        >Agreon</a
+      >
     </footer>
 
     <script type="module" src="js/main.js"></script>

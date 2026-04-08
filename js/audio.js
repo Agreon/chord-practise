@@ -16,6 +16,9 @@ export function getAnalyser() { return analyser; }
 let onDetectedCallback = null;
 export function setDetectionCallback(fn) { onDetectedCallback = fn; }
 
+let expectedChord = null;
+export function setExpectedChord(chord) { expectedChord = chord; }
+
 // ─── Mic Setup ────────────────────────────────────────────────────────────────
 export async function setupMic() {
   try {
@@ -109,10 +112,14 @@ export function animateVolume() {
       chordHits[chord] = (chordHits[chord] || 0) + 1;
       const top = Object.entries(chordHits).sort((a, b) => b[1] - a[1])[0];
       if (top && top[1] >= CONFIRM_FRAMES) {
-        soundDetected = true;
-        listening = false;
-        stopReactionTimer();
-        if (onDetectedCallback) onDetectedCallback(top[0], score);
+        if (!expectedChord || top[0] === expectedChord) {
+          soundDetected = true;
+          listening = false;
+          stopReactionTimer();
+          if (onDetectedCallback) onDetectedCallback(top[0], score);
+        } else {
+          chordHits = {};
+        }
       }
     }
   } else {

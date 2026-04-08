@@ -1,6 +1,6 @@
 import { CHORDS } from "./data.js";
 import { getReactionMs, getSpeedClass, combinedScore, cancelTimerAnimation } from "./timer.js";
-import { startAudioListening, cancelVolumeAnimation } from "./audio.js";
+import { startAudioListening, cancelVolumeAnimation, setExpectedChord } from "./audio.js";
 import { saveProgress, showSaveIndicator } from "./storage.js";
 import { showChordCard, updateStats, buildChordSelect } from "./ui.js";
 
@@ -12,6 +12,7 @@ export const state = {
   currentChord: null,
   bestTimes: {},
   autoAdvanceDelay: 2500,
+  hideChordDiagram: false,
 };
 
 export function applyLoadedData(data) {
@@ -20,11 +21,12 @@ export function applyLoadedData(data) {
   if (data.selectedChords && data.selectedChords.length > 0) state.selectedChords = data.selectedChords;
   if (data.bestTimes) state.bestTimes = data.bestTimes;
   if (data.autoAdvanceDelay) state.autoAdvanceDelay = data.autoAdvanceDelay;
+  if (data.hideChordDiagram !== undefined) state.hideChordDiagram = data.hideChordDiagram;
 }
 
 export function getStateSnapshot() {
-  const { mastery, attempts, selectedChords, bestTimes, autoAdvanceDelay } = state;
-  return { mastery, attempts, selectedChords, bestTimes, autoAdvanceDelay };
+  const { mastery, attempts, selectedChords, bestTimes, autoAdvanceDelay, hideChordDiagram } = state;
+  return { mastery, attempts, selectedChords, bestTimes, autoAdvanceDelay, hideChordDiagram };
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
@@ -178,11 +180,13 @@ export function nextChord() {
   state.currentChord = state.selectedChords.length === 1 ? state.selectedChords[0] : pickChord();
 
   showChordCard(state.currentChord, state.mastery[state.currentChord]);
+  document.querySelector(".diagram-wrap").style.display = state.hideChordDiagram ? "none" : "";
 
   clearAutoAdvance();
   document.getElementById("rating-section").classList.remove("visible");
   document.querySelector(".rating-prompt").textContent = "How did that sound?";
 
+  setExpectedChord(state.currentChord);
   startAudioListening();
 }
 
